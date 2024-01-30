@@ -1,0 +1,34 @@
+{
+  "name": "robonomics-api-augment",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "license": "BSD-3-Clause",
+  "author": "vol4tim <sas@robonomics.network>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/airalab/robonomics-api-augment.git"
+  },
+  "scripts": {
+    "generate": "npm run load:meta && npm run generate:defs && npm run generate:meta",
+    "load:meta": "node --experimental-specifier-resolution=node --loader ts-node/esm ./scripts/metadata.js",
+    "load:meta:local": "curl -s -H \"Content-Type: application/json\" -d '{\"id\":\"1\", \"jsonrpc\":\"2.0\", \"method\": \"state_getMetadata\", \"params\":[]}' http://localhost:9933 > metadata.json",
+    "generate:defs": "node --experimental-specifier-resolution=node --loader ts-node/esm  node_modules/.bin/polkadot-types-from-defs --package robonomics-api-augment/interfaces --input ./src/interfaces --endpoint ./metadata.json",
+    "generate:meta": "node --experimental-specifier-resolution=node --loader ts-node/esm node_modules/.bin/polkadot-types-from-chain --endpoint ./metadata.json --package robonomics-api-augment/interfaces --output ./src/interfaces",
+    "prebuild": "rimraf dist",
+    "build": "tsc -b --verbose",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@polkadot/api": "^10.11.2",
+    "@polkadot/typegen": "^10.11.2",
+    "@types/node": "^20.11.9",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "websocket": "^1.0.34"
+  }
+}
